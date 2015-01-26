@@ -12,10 +12,11 @@ console.log('listen on 2100');*/
 var app = require('http').createServer(handler);
 var io = require('socket.io')(app);
 var fs = require('fs');
+var port = process.env.PORT || 2500;
 var cursors = {};
 
-app.listen(2500);
-console.log('listen 2500');
+app.listen(port);
+console.log('listen ' + port);
 
 function handler (req, res) {
   fs.readFile(__dirname + '/index.html',
