@@ -1,0 +1,60 @@
+<html>
+	<head>
+		<title></title>
+		<meta charset="utf-8" />
+		<script src="http://127.0.0.1:2500/socket.io/socket.io.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+		<style>
+			.local {
+				width: 20px;
+				height: 20px;
+				background-color: red;
+				position: absolute;
+				border-radius: 50%;
+			}
+			.other {
+				width: 20px;
+				height: 20px;
+				background-color: rgba(0,0,230, 0.3);
+				position: absolute;
+				border-radius: 50%;
+			}
+			.counter {
+				font-family: monospace;
+				color: #a0a0a0;
+				font-size: 30px;
+			}
+		</style>
+	</head>
+	<body>
+		<p>Este es un pequeño experimento usando socket.io, los puntos azules reportan la posicion del cursor de otro usuario en tiempo real.</p>
+		<h3>Usuarios activos: <span class="counter">0</span></h3>
+		<div class="container">
+		</div>
+		<div class="local"></div>
+		<script>
+		  var socket = io('http://127.0.0.1:2500');
+		  socket.on('news', function (data) {
+		  });
+
+		  $(window).mousemove(function(even){
+		  	$('.local').css({left: even.pageX - 10, top: even.pageY - 10});
+		  	socket.emit('cursor', { x: even.pageX, y: even.pageY});
+		  });
+
+		  socket.on('update', function(data){
+		  	var len = 0;
+		  	$('.container').html('');
+		  	for(sck in data) {
+		  		if(sck != socket.id) {
+		  			var elem = $('<div id="' + sck + '"></div>').addClass('other').css({left: data[sck].x - 10, top: data[sck].y - 10});
+		  			$('.container').append(elem);
+		  			console.log(data[sck]);
+		  		}
+		  		len++;
+		  	}
+		  	$('.counter').html(len);
+		  });
+		</script>
+	</body>
+</html>
